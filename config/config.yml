@@ -1,0 +1,15 @@
+# PLACEHOLDERS
+# <prefix> -> For Bot Prefix
+
+# Language Supports
+# -> English, Turkish
+
+Token:
+Locale: english
+
+# Types: PLAYING, LISTENING
+# Statuses: ONLINE, OFFLINE, DND, IDLE
+Presence:
+  Type: LISTENING
+  Text: <prefix>Help
+  Status: IDLE
