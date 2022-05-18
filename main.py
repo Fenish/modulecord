@@ -1,5 +1,6 @@
 import sys
 import discord
+import importlib
 import traceback
 
 from pathlib import Path
@@ -18,6 +19,7 @@ class ModuleCord(commands.Bot):
                          command_prefix="m!")
         self.config = YamlFile("config/config.yml")
         self.locale = YamlFile(f"locales/{self.config['Locale'].lower()}.yml")
+        self.repository = "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
 
     async def close(self):
         await super().close()
@@ -68,7 +70,7 @@ class ModuleCord(commands.Bot):
             name=name
         ), status=status)
         print(f"{self.user.name} Is Active")
-        await console()
+        # await console()
 
     async def reload_cogs(self):
         loaded_cogs = client.extensions
