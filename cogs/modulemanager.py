@@ -52,19 +52,22 @@ class ModuleManager(commands.Cog):
         installed_module = importlib.import_module(f"modules.{module}")
         try:
             required = installed_module.modules
-            depencies = []
-            for k in required:
-                depencies.append(f"- **{k}**")
-            embed.description = "Installing depencies\n\n{}".format("\n".join(depencies))
-            embed.colour = 0xf4f959
-            await status_msg.edit(embed=embed)
             installed = {pkg.key for pkg in pkg_resources.working_set}
             missing = required - installed
+            depencies = []
+            for k in missing:
+                depencies.append(f"- **{k}**")
+
             if missing:
+                embed.description = "Installing depencies\n\n{}".format("\n".join(depencies))
+                embed.colour = 0xf4f959
+                await status_msg.edit(embed=embed)
+
                 python = sys.executable
                 p = Popen([python, '-m', 'pip', 'install', *missing], stdout=PIPE,
                           stderr=STDOUT, shell=True, encoding="utf-8")
                 p.wait()
+
             embed.colour = 0x86ff71
             embed.description = "Module installed successfully you can reload bot for apply changes"
         except AttributeError:
