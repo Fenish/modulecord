@@ -37,7 +37,7 @@ class ModuleManager(commands.Cog):
         installing_module = self.bot.locale["ModuleManager"]["installing"].replace(
             "{module}", module
         )
-        embed = discord.Embed(title=self.bot.locale["ModuleManager"]["title"],
+        embed = discord.Embed(title="🧩 " + self.bot.locale["ModuleManager"]["title"],
                               description=checking_module,
                               colour=0xb153ff)
         status_msg = await ctx.send(embed=embed)

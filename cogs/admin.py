@@ -14,18 +14,19 @@ class Admin(commands.Cog):
     async def reload(self, ctx):
         begin = int(time.time_ns())
         embed = discord.Embed(color=0xaae6e2,
-                              description="Reloading bot 🔄")
+                              description=self.bot.locale["Admin"]["reloading"] + " 🔄")
         message = await ctx.send(embed=embed)
         reload_message, error_message = await self.bot.reload_cogs()
         delta = int((int(time.time_ns()) - begin) / 1000000)
         embed.description = None
-        embed.title = "🎉 Reload Complete"
+        embed.title = "🎉 " + self.bot.locale["Admin"]["reload_complete"]
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         embed.set_footer(text=f"{delta}Ms")
         for key in reload_message:
             embed.add_field(name=key, value="\n".join(reload_message[key]), inline=True)
         if error_message:
-            embed.add_field(name="⚠️ Error Output", value=f"```py\n{error_message}\n```", inline=False)
+            embed.add_field(name=f"⚠️ {self.bot.locale['Admin']['reload_error']}",
+                            value=f"```py\n{error_message}\n```", inline=False)
         await message.edit(embed=embed)
 
 

@@ -16,14 +16,8 @@ class ModuleCord(commands.Bot):
         super().__init__(intents=discord.Intents.all(),
                          case_insensitive=True,
                          command_prefix="m!")
+        self.locale = {}
         self.config = YamlFile("config/config.yml")
-        language = self.config['Locale'].lower()
-        self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                                  f"main/locales/{language}.json")
-        if len(self.locale) == 0:
-            self.config["Locale"] = "English"
-            self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                                      f"main/locales/english.json")
         self.repository = "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
 
         try:
@@ -99,6 +93,14 @@ class ModuleCord(commands.Bot):
                 reload_message[tree[-1].capitalize()].append(f"❌ {file.stem.capitalize()}")
                 error_message = f'Ignoring exception in cog {file.stem}:\n{e}'
                 traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
+
+        language = self.config['Locale'].lower()
+        self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                                  f"main/locales/{language}.json")
+        if len(self.locale) == 0:
+            self.config["Locale"] = "English"
+            self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                                      f"main/locales/english.json")
         return reload_message, error_message
 
 
