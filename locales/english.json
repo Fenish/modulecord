@@ -1,0 +1,11 @@
+{
+  "ModuleManager": {
+    "title": "\uD83E\uDDE9 Module Manager",
+    "checking": "Checking for module `{module}`",
+    "installing": "Installing `{module}`",
+    "installed": "Module installed successfully you can reload bot for apply changes",
+    "already_installed": "Module already installed",
+    "not_found": "Module not found",
+    "installing_depencies": "Installing depencies\\n\\n{depencies}"
+  }
+}

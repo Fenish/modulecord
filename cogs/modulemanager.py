@@ -24,10 +24,12 @@ class ModuleManager(commands.Cog):
         return {}
 
     @commands.group(invoke_without_command=True)
+    @commands.is_owner()
     async def module(self, ctx):
         await ctx.send("soon")
 
     @module.command()
+    @commands.is_owner()
     async def install(self, ctx, module):
         embed = discord.Embed(title="🧩 Module Manager",
                               description=f"Checking for module `{module}`",

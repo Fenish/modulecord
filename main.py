@@ -1,11 +1,10 @@
 import sys
-import discord
-import importlib
 import traceback
-
 from pathlib import Path
-from aioconsole import ainput
+
+import discord
 from discord.ext import commands
+
 from cogs.utils.yamlhandler import YamlFile
 
 
@@ -21,11 +20,6 @@ class ModuleCord(commands.Bot):
         self.locale = YamlFile(f"locales/{self.config['Locale'].lower()}.yml")
         self.repository = "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
 
-    async def close(self):
-        await super().close()
-
-    async def on_ready(self):
-        await self.reload_cogs()
         try:
             act_type = self.config["Presence"]["Type"]
             name = self.config["Presence"]["Text"]
@@ -64,53 +58,54 @@ class ModuleCord(commands.Bot):
             print(f"Key: {e}")
             print("##################################################")
             return
-
-        await self.change_presence(activity=discord.Activity(
+        self.activity = discord.Activity(
             type=act_type,
             name=name
-        ), status=status)
+        )
+        self.status = status
+
+    async def close(self):
+        await super().close()
+
+    async def setup_hook(self) -> None:
+        await self.application_info()
+
+    async def on_ready(self):
+        await self.reload_cogs()
         print(f"{self.user.name} Is Active")
-        # await console()
 
     async def reload_cogs(self):
+        reload_message = {}
+        error_message = None
         loaded_cogs = client.extensions
         for cog in list(loaded_cogs):
             await client.unload_extension(cog)
         for file in Path('cogs').glob('**/*.py'):
             *tree, _ = file.parts
+            reload_message.setdefault(tree[-1].capitalize(), [])
             try:
                 await self.load_extension(f"{'.'.join(tree)}.{file.stem}")
+                reload_message[tree[-1].capitalize()].append(f"✅ {file.stem.capitalize()}")
             except discord.ext.commands.errors.NoEntryPointError:
+                reload_message[tree[-1].capitalize()].append(f"✅ {file.stem.capitalize()}")
                 pass
             except Exception as e:
+                reload_message[tree[-1].capitalize()].append(f"❌ {file.stem.capitalize()}")
+                error_message = f'Ignoring exception in cog {file.stem}:\n{e}'
                 traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
+        return reload_message, error_message
 
 
 client = ModuleCord()
 
 
 @client.check
-def block_dm(ctx):
-    return ctx.guild
-
-
-async def console():
-    command = str(await ainput("> ")).strip()
-    if command == "stop":
-        return await client.close()
-    elif command == "reload":
-        print("[+] Reloading...")
-        await client.reload_cogs()
-        print("[+] Reload Complete.")
-    elif command == "guilds":
-        guilds = [g.name for g in client.guilds]
-        print("====== # Guilds\n")
-        print("\n".join(guilds))
-    elif command == "options":
-        print("====== # Options\n")
-        for key in client.config:
-            print(f"{key} = {client.config[key]}")
-    await console()
+def block_dm_for_members():
+    async def predicate(ctx) -> bool:
+        if not await ctx.bot.is_owner(ctx.author):
+            return ctx.guild
+        return True
+    return client.check(predicate)
 
 
 if __name__ == "__main__":
