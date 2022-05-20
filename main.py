@@ -5,7 +5,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands
 
-from cogs.utils.yamlhandler import YamlFile
+from cogs.utils.filehandler import YamlFile, JsonFromUrl
 
 
 class ModuleCord(commands.Bot):
@@ -17,7 +17,13 @@ class ModuleCord(commands.Bot):
                          case_insensitive=True,
                          command_prefix="m!")
         self.config = YamlFile("config/config.yml")
-        self.locale = YamlFile(f"locales/{self.config['Locale'].lower()}.yml")
+        language = self.config['Locale'].lower()
+        self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                                  f"main/locales/{language}.json")
+        if len(self.locale) == 0:
+            self.config["Locale"] = "English"
+            self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                                      f"main/locales/english.json")
         self.repository = "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
 
         try:
@@ -100,7 +106,7 @@ client = ModuleCord()
 
 
 @client.check
-def block_dm_for_members():
+def block_dm_for_members(context):
     async def predicate(ctx) -> bool:
         if not await ctx.bot.is_owner(ctx.author):
             return ctx.guild

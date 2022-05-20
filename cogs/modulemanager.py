@@ -31,8 +31,14 @@ class ModuleManager(commands.Cog):
     @module.command()
     @commands.is_owner()
     async def install(self, ctx, module):
-        embed = discord.Embed(title="🧩 Module Manager",
-                              description=f"Checking for module `{module}`",
+        checking_module = self.bot.locale["ModuleManager"]["checking"].replace(
+            "{module}", module
+        )
+        installing_module = self.bot.locale["ModuleManager"]["installing"].replace(
+            "{module}", module
+        )
+        embed = discord.Embed(title=self.bot.locale["ModuleManager"]["title"],
+                              description=checking_module,
                               colour=0xb153ff)
         status_msg = await ctx.send(embed=embed)
         embed.colour = 0xff5357
@@ -41,11 +47,11 @@ class ModuleManager(commands.Cog):
             if not os.path.exists("modules"):
                 os.makedirs("modules")
             if not os.path.exists(f"modules/{module}"):
-                embed.description = f"Installing `{module}`"
+                embed.description = installing_module
                 embed.colour = 0x86ff71
                 await status_msg.edit(embed=embed)
                 request.urlretrieve(github_module["download_url"], f"modules/{module}.py")
-                embed.description = "Module installed successfully you can reload bot for apply changes"
+                embed.description = self.bot.locale["ModuleManager"]["installed"]
             else:
                 embed.description = "Module already installed"
         else:
@@ -61,7 +67,11 @@ class ModuleManager(commands.Cog):
                 depencies.append(f"- **{k}**")
 
             if missing:
-                embed.description = "Installing depencies\n\n{}".format("\n".join(depencies))
+                installing_depencies = self.bot.locale["ModuleManager"]["installing_depencies"].replace(
+                    "{depencies}", str("\n".join(depencies))
+                )
+
+                embed.description = installing_depencies
                 embed.colour = 0xf4f959
                 await status_msg.edit(embed=embed)
 
@@ -71,7 +81,7 @@ class ModuleManager(commands.Cog):
                 p.wait()
 
             embed.colour = 0x86ff71
-            embed.description = "Module installed successfully you can reload bot for apply changes"
+            embed.description = self.bot.locale["ModuleManager"]["installed"]
         except AttributeError:
             pass
         return await status_msg.edit(embed=embed)

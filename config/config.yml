@@ -5,7 +5,7 @@
 # -> English, Turkish
 
 Token:
-Locale: english
+Locale: English
 
 # Types: PLAYING, LISTENING
 # Statuses: ONLINE, OFFLINE, DND, IDLE
