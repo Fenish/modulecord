@@ -37,6 +37,9 @@ class JsonFromUrl:
         if response.status_code != 404:
             self.data = response.json()
 
+    def get(self, item):
+        return self.data.get(item)
+
     def __getitem__(self, item):
         return self.data[item]
 
