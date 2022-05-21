@@ -2,6 +2,7 @@ import time
 import discord
 
 from discord.ext import commands
+from discord.ext.commands import Context
 
 
 class Admin(commands.Cog):
@@ -11,7 +12,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def reload(self, ctx):
+    async def reload(self, ctx: Context):
         begin = int(time.time_ns())
         embed = discord.Embed(color=0xaae6e2,
                               description=self.bot.locale["Admin"]["reloading"] + " 🔄")

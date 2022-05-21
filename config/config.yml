@@ -2,7 +2,7 @@
 # <prefix> -> For Bot Prefix
 
 # Language Supports
-# -> English, Turkish
+# https://github.com/Fenish/modulecord-modules/blob/main/locales/
 
 Token:
 Locale: English

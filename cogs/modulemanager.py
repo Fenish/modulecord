@@ -7,6 +7,7 @@ import pkg_resources
 
 from urllib import request
 from discord.ext import commands
+from discord.ext.commands import Context
 from subprocess import Popen, PIPE, STDOUT
 
 
@@ -25,12 +26,12 @@ class ModuleManager(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     @commands.is_owner()
-    async def module(self, ctx):
+    async def module(self, ctx: Context):
         await ctx.send("soon")
 
     @module.command()
     @commands.is_owner()
-    async def install(self, ctx, module):
+    async def install(self, ctx: Context, module):
         checking_module = self.bot.locale["ModuleManager"]["checking"].replace(
             "{module}", module
         )
