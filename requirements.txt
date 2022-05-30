@@ -1,0 +1,4 @@
+git+https://github.com/Rapptz/discord-ext-menus
+git+https://github.com/Rapptz/discord.py
+requests~=2.27.1
+psutil~=5.9.1

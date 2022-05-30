@@ -9,6 +9,7 @@ from discord.ext import commands
 from discord.ext.commands import Context
 from subprocess import Popen, PIPE, STDOUT
 from cogs.utils.filehandler import JsonFromUrl
+from cogs.utils.paginator import PaginatorMenu, PaginatorSource
 
 
 class ModuleManager(commands.Cog):
@@ -24,6 +25,13 @@ class ModuleManager(commands.Cog):
                 return key
         return {}
 
+    def get_modules(self) -> list:
+        module_repo = JsonFromUrl(self.bot.repository)
+        module_list = []
+        for module in module_repo:
+            module_list.append(module.get("name").replace(".py", "").capitalize())
+        return module_list
+
     @commands.group(invoke_without_command=True)
     @commands.is_owner()
     async def module(self, ctx: Context):
@@ -31,15 +39,66 @@ class ModuleManager(commands.Cog):
 
     @module.command()
     @commands.is_owner()
+    async def search(self, ctx: Context, module_to_search):
+        founded = []
+        _m = self.get_modules()
+        locale = self.bot.locale["ModuleManager"]
+
+        for index, module in enumerate(_m):
+            if module_to_search.lower() in module.lower():
+                emoji = ":small_orange_diamond: "
+                if index % 2 == 0:
+                    emoji = ":small_blue_diamond: "
+                founded.append(emoji + module)
+
+        embed = discord.Embed(title="🧩 " + locale["title"],
+                              colour=0x5bb8fd)
+        embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
+
+        base_text = locale["search_found"].replace("{amount}", f"{len(founded)}")
+        if len(founded) == 0:
+            base_text = ""
+            founded.append(locale["search_not_found"].replace("{prefix}", ctx.prefix))
+            embed.colour = 0xff5357
+
+        source = PaginatorSource(embed=embed, entries=founded, per_page=10, base_text=base_text)
+        menu = PaginatorMenu(source)
+        await menu.start(ctx)
+
+    @module.command()
+    @commands.is_owner()
+    async def list(self, ctx: Context):
+        modules_list = []
+        _m = self.get_modules()
+        locale = self.bot.locale["ModuleManager"]
+        for index, module in enumerate(_m):
+            emoji = ":small_orange_diamond: "
+            if index % 2 == 0:
+                emoji = ":small_blue_diamond: "
+            modules_list.append(emoji + module)
+        embed = discord.Embed(title="🧩 " + locale["title"],
+                              colour=0x5bb8fd)
+        embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
+        
+        base_text = locale["list_description"].replace("{amount}",
+                                                       str(len(modules_list))).replace("{prefix}",
+                                                                                       ctx.prefix)
+        source = PaginatorSource(embed=embed, entries=modules_list, per_page=10, base_text=base_text)
+        menu = PaginatorMenu(source)
+        await menu.start(ctx)
+
+    @module.command()
+    @commands.is_owner()
     async def install(self, ctx: Context, module):
         module = module.lower()
-        checking_module = self.bot.locale["ModuleManager"]["checking"].replace(
+        locale = self.bot.locale["ModuleManager"]
+        checking_module = locale["checking"].replace(
             "{module}", module
         )
-        installing_module = self.bot.locale["ModuleManager"]["installing"].replace(
+        installing_module = locale["installing"].replace(
             "{module}", module
         )
-        embed = discord.Embed(title="🧩 " + self.bot.locale["ModuleManager"]["title"],
+        embed = discord.Embed(title="🧩 " + locale["title"],
                               description=checking_module,
                               colour=0xb153ff)
         status_msg = await ctx.send(embed=embed)
@@ -65,7 +124,7 @@ class ModuleManager(commands.Cog):
                         depencies.append(f"- **{k}**")
 
                     if missing:
-                        installing_depencies = self.bot.locale["ModuleManager"]["installing_depencies"].replace(
+                        installing_depencies = locale["installing_depencies"].replace(
                             "{depencies}", str("\n".join(depencies))
                         )
 
@@ -77,12 +136,12 @@ class ModuleManager(commands.Cog):
                         p = Popen([python, '-m', 'pip', 'install', *missing], stdout=PIPE,
                                   stderr=STDOUT, shell=True, encoding="utf-8")
                         p.wait()
-                embed.description = self.bot.locale["ModuleManager"]["installed"]
+                embed.description = locale["installed"]
 
             else:
-                embed.description = "Module already installed"
+                embed.description = locale["already_installed"]
         else:
-            embed.description = "Module not found"
+            embed.description = locale["not_found"]
         return await status_msg.edit(embed=embed)
 
 

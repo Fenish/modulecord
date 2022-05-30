@@ -73,6 +73,7 @@ class ModuleCord(commands.Bot):
 
     async def on_ready(self):
         await self.reload_cogs()
+        self.installed_modules()
         print(f"{self.user.name} Is Active")
 
     async def reload_cogs(self):
@@ -103,6 +104,10 @@ class ModuleCord(commands.Bot):
             self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
                                       f"main/locales/english.json")
         return reload_message, error_message
+
+    def installed_modules(self):
+        for file in Path('cogs/modules').glob('*.py'):
+            print(file.stem)
 
 
 client = ModuleCord()
