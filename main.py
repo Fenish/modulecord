@@ -13,11 +13,12 @@ class ModuleCord(commands.Bot):
         pass
 
     def __init__(self):
-        super().__init__(
-            intents=discord.Intents.all(), case_insensitive=True, command_prefix="m!"
-        )
         self.locale = {}
         self.config = YamlFile("config/config.yml")
+        super().__init__(
+            intents=discord.Intents.all(), case_insensitive=True, command_prefix=self.config["Prefix"]
+        )
+
         self.repository = (
             "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
         )

@@ -6,6 +6,7 @@
 
 Token:
 Locale: English
+Prefix: "m!"
 
 # Types: PLAYING, LISTENING
 # Statuses: ONLINE, OFFLINE, DND, IDLE
