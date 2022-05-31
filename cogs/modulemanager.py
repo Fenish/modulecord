@@ -51,17 +51,18 @@ class ModuleManager(commands.Cog):
                     emoji = ":small_blue_diamond: "
                 founded.append(emoji + module)
 
-        embed = discord.Embed(title="🧩 " + locale["title"],
-                              colour=0x5bb8fd)
+        embed = discord.Embed(title="🧩 " + locale["title"], colour=0x5BB8FD)
         embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
 
         base_text = locale["search_found"].replace("{amount}", f"{len(founded)}")
         if len(founded) == 0:
             base_text = ""
             founded.append(locale["search_not_found"].replace("{prefix}", ctx.prefix))
-            embed.colour = 0xff5357
+            embed.colour = 0xFF5357
 
-        source = PaginatorSource(embed=embed, entries=founded, per_page=10, base_text=base_text)
+        source = PaginatorSource(
+            embed=embed, entries=founded, per_page=10, base_text=base_text
+        )
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
@@ -76,14 +77,17 @@ class ModuleManager(commands.Cog):
             if index % 2 == 0:
                 emoji = ":small_blue_diamond: "
             modules_list.append(emoji + module)
-        embed = discord.Embed(title="🧩 " + locale["title"],
-                              colour=0x5bb8fd)
+        embed = discord.Embed(title="🧩 " + locale["title"], colour=0x5BB8FD)
         embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
-        
-        base_text = locale["list_description"].replace("{amount}",
-                                                       str(len(modules_list))).replace("{prefix}",
-                                                                                       ctx.prefix)
-        source = PaginatorSource(embed=embed, entries=modules_list, per_page=10, base_text=base_text)
+
+        base_text = (
+            locale["list_description"]
+            .replace("{amount}", str(len(modules_list)))
+            .replace("{prefix}", ctx.prefix)
+        )
+        source = PaginatorSource(
+            embed=embed, entries=modules_list, per_page=10, base_text=base_text
+        )
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
@@ -92,27 +96,25 @@ class ModuleManager(commands.Cog):
     async def install(self, ctx: Context, module):
         module = module.lower()
         locale = self.bot.locale["ModuleManager"]
-        checking_module = locale["checking"].replace(
-            "{module}", module
+        checking_module = locale["checking"].replace("{module}", module)
+        installing_module = locale["installing"].replace("{module}", module)
+        embed = discord.Embed(
+            title="🧩 " + locale["title"], description=checking_module, colour=0xB153FF
         )
-        installing_module = locale["installing"].replace(
-            "{module}", module
-        )
-        embed = discord.Embed(title="🧩 " + locale["title"],
-                              description=checking_module,
-                              colour=0xb153ff)
         status_msg = await ctx.send(embed=embed)
 
-        embed.colour = 0xff5357
+        embed.colour = 0xFF5357
         github_module = self.check_on_repository(module)
         if github_module:
             if not os.path.exists("cogs/modules"):
                 os.makedirs("cogs/modules")
             if not os.path.exists(f"cogs/modules/{module}.py"):
                 embed.description = installing_module
-                embed.colour = 0x86ff71
+                embed.colour = 0x86FF71
                 await status_msg.edit(embed=embed)
-                request.urlretrieve(github_module["download_url"], f"cogs/modules/{module}.py")
+                request.urlretrieve(
+                    github_module["download_url"], f"cogs/modules/{module}.py"
+                )
 
                 repo_requirements = JsonFromUrl(self.bot.repodepencies)
                 if repo_requirements.get(module):
@@ -129,12 +131,17 @@ class ModuleManager(commands.Cog):
                         )
 
                         embed.description = installing_depencies
-                        embed.colour = 0xf4f959
+                        embed.colour = 0xF4F959
                         await status_msg.edit(embed=embed)
-                        embed.colour = 0x86ff71
+                        embed.colour = 0x86FF71
                         python = sys.executable
-                        p = Popen([python, '-m', 'pip', 'install', *missing], stdout=PIPE,
-                                  stderr=STDOUT, shell=False, encoding="utf-8")
+                        p = Popen(
+                            [python, "-m", "pip", "install", *missing],
+                            stdout=PIPE,
+                            stderr=STDOUT,
+                            shell=False,
+                            encoding="utf-8",
+                        )
                         p.wait()
                 embed.description = locale["installed"]
 
