@@ -13,12 +13,14 @@ class ModuleCord(commands.Bot):
         pass
 
     def __init__(self):
-        super().__init__(intents=discord.Intents.all(),
-                         case_insensitive=True,
-                         command_prefix="m!")
+        super().__init__(
+            intents=discord.Intents.all(), case_insensitive=True, command_prefix="m!"
+        )
         self.locale = {}
         self.config = YamlFile("config/config.yml")
-        self.repository = "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
+        self.repository = (
+            "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
+        )
         self.repodepencies = "https://raw.githubusercontent.com/Fenish/modulecord-modules/main/requirements.json"
 
         try:
@@ -59,10 +61,7 @@ class ModuleCord(commands.Bot):
             print(f"Key: {e}")
             print("##################################################")
             return
-        self.activity = discord.Activity(
-            type=act_type,
-            name=name
-        )
+        self.activity = discord.Activity(type=act_type, name=name)
         self.status = status
 
     async def close(self):
@@ -82,27 +81,37 @@ class ModuleCord(commands.Bot):
         self.config = YamlFile("config/config.yml")
         for cog in list(loaded_cogs):
             await client.unload_extension(cog)
-        for file in Path('cogs').glob('**/*.py'):
+        for file in Path("cogs").glob("**/*.py"):
             *tree, _ = file.parts
             reload_message.setdefault(tree[-1].capitalize(), [])
             try:
                 await self.load_extension(f"{'.'.join(tree)}.{file.stem}")
-                reload_message[tree[-1].capitalize()].append(f"✅ {file.stem.capitalize()}")
+                reload_message[tree[-1].capitalize()].append(
+                    f"✅ {file.stem.capitalize()}"
+                )
             except discord.ext.commands.errors.NoEntryPointError:
-                reload_message[tree[-1].capitalize()].append(f"✅ {file.stem.capitalize()}")
+                reload_message[tree[-1].capitalize()].append(
+                    f"✅ {file.stem.capitalize()}"
+                )
                 pass
             except Exception as e:
-                reload_message[tree[-1].capitalize()].append(f"❌ {file.stem.capitalize()}")
-                error_message = f'Ignoring exception in cog {file.stem}:\n{e}'
+                reload_message[tree[-1].capitalize()].append(
+                    f"❌ {file.stem.capitalize()}"
+                )
+                error_message = f"Ignoring exception in cog {file.stem}:\n{e}"
                 traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
 
-        language = self.config['Locale'].lower().capitalize()
-        self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                                  f"main/locales/{language}.json")
+        language = self.config["Locale"].lower().capitalize()
+        self.locale = JsonFromUrl(
+            "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+            f"main/locales/{language}.json"
+        )
         if len(self.locale) == 0:
             self.config["Locale"] = "English"
-            self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                                      "main/locales/English.json")
+            self.locale = JsonFromUrl(
+                "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                "main/locales/English.json"
+            )
         return reload_message, error_message
 
 
@@ -115,6 +124,7 @@ def block_dm_for_members(context):
         if not await ctx.bot.is_owner(ctx.author):
             return ctx.guild
         return True
+
     return client.check(predicate)
 
 
