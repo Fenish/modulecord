@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    <img src="    https://discordapp.com/api/guilds/977596299077623818/widget.png?style=shield" alt="Online members"/>
+    <img src="https://discordapp.com/api/guilds/977596299077623818/widget.png?style=shield" alt="Online members"/>
     <img src="https://www.codefactor.io/repository/github/fenish/modulecord/badge" alt="CodeFactor"/>
     <img src="https://badges.crowdin.net/modulecord/localized.svg" alt="Localized with Crowdin">
 </p>
