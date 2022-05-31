@@ -21,7 +21,8 @@ class ModuleCord(commands.Bot):
         self.repository = (
             "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
         )
-        self.repodepencies = "https://raw.githubusercontent.com/Fenish/modulecord-modules/main/requirements.json"
+        self.repodepencies = "https://raw.githubusercontent.com/Fenish/" \
+                             "modulecord-modules/main/requirements.json"
 
         try:
             act_type = self.config["Presence"]["Type"]
@@ -93,7 +94,6 @@ class ModuleCord(commands.Bot):
                 reload_message[tree[-1].capitalize()].append(
                     f"✅ {file.stem.capitalize()}"
                 )
-                pass
             except Exception as e:
                 reload_message[tree[-1].capitalize()].append(
                     f"❌ {file.stem.capitalize()}"
