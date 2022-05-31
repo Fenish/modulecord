@@ -13,7 +13,7 @@ class YamlFile:
     def set_data(self, new_dict: dict):
         yaml_data = self.data
         yaml_data.update(new_dict)
-        with open(self.file, 'w') as file:
+        with open(self.file, "w") as file:
             yaml.dump(yaml_data, file)
 
     def __getitem__(self, item):
