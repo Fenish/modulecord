@@ -35,8 +35,10 @@ class ModuleManager(commands.Cog):
 
     @staticmethod
     def get_module_info(module):
-        req = requests.get("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                           f"main/modules/{module.lower()}.py")
+        req = requests.get(
+            "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+            f"main/modules/{module.lower()}.py"
+        )
         if req.status_code == 404:
             return {}
         code = io.BytesIO(req.content)
@@ -101,8 +103,8 @@ class ModuleManager(commands.Cog):
 
         base_text = (
             locale["list_description"]
-                .replace("{amount}", str(len(modules_list)))
-                .replace("{prefix}", ctx.prefix)
+            .replace("{amount}", str(len(modules_list)))
+            .replace("{prefix}", ctx.prefix)
         )
         source = PaginatorSource(
             embed=embed, entries=modules_list, per_page=10, base_text=base_text
@@ -179,7 +181,9 @@ class ModuleManager(commands.Cog):
         module = module.lower()
         locale = self.bot.locale["ModuleManager"]
         module_info = self.get_module_info(module)
-        embed = discord.Embed(title="🧩 " + locale["title"], colour=0x5BB8FD, description="")
+        embed = discord.Embed(
+            title="🧩 " + locale["title"], colour=0x5BB8FD, description=""
+        )
         embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
         if module_info:
             for key in module_info:
