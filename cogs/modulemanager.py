@@ -114,7 +114,8 @@ class ModuleManager(commands.Cog):
 
                 download_url = github_module["download_url"]
                 r = requests.get(url=download_url)
-                open(f"cogs/modules/{github_module['name']}", "w+").write(r.text)
+                with open(f"cogs/modules/{github_module['name']}", "w+") as file:
+                    file.write(r.text)
 
                 repo_requirements = JsonFromUrl(self.bot.repodepencies)
                 if repo_requirements.get(module):
