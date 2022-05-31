@@ -58,11 +58,15 @@ class Locale:
         self.language = language.lower().capitalize()
         self.default_locale = "English"
 
-        locale_url = "https://raw.githubusercontent.com/Fenish/modulecord-modules/" \
-                     f"main/locales/{self.language}.json"
+        locale_url = (
+            "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+            f"main/locales/{self.language}.json"
+        )
 
-        default_locale_url = "https://raw.githubusercontent.com/Fenish/modulecord-modules/" \
-                             "main/locales/English.json"
+        default_locale_url = (
+            "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+            "main/locales/English.json"
+        )
 
         self.locale_file = JsonFromUrl(locale_url)
         self.default_locale_file = JsonFromUrl(default_locale_url)
