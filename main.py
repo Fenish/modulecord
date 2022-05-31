@@ -5,7 +5,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands
 
-from cogs.utils.filehandler import YamlFile, JsonFromUrl, Locale
+from cogs.utils.filehandler import YamlFile, Locale
 
 
 class ModuleCord(commands.Bot):
