@@ -5,7 +5,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands
 
-from cogs.utils.filehandler import YamlFile, JsonFromUrl
+from cogs.utils.filehandler import YamlFile, JsonFromUrl, Locale
 
 
 class ModuleCord(commands.Bot):
@@ -104,16 +104,7 @@ class ModuleCord(commands.Bot):
                 traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
 
         language = self.config["Locale"].lower().capitalize()
-        self.locale = JsonFromUrl(
-            "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-            f"main/locales/{language}.json"
-        )
-        if len(self.locale) == 0:
-            self.config["Locale"] = "English"
-            self.locale = JsonFromUrl(
-                "https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                "main/locales/English.json"
-            )
+        self.locale = Locale(language)
         return reload_message, error_message
 
 

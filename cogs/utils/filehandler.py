@@ -51,3 +51,23 @@ class JsonFromUrl:
 
     def __len__(self) -> int:
         return len(self.data)
+
+
+class Locale:
+    def __init__(self, language):
+        self.language = language.lower().capitalize()
+        self.default_locale = "English"
+
+        locale_url = "https://raw.githubusercontent.com/Fenish/modulecord-modules/" \
+                     f"main/locales/{self.language}.json"
+
+        default_locale_url = "https://raw.githubusercontent.com/Fenish/modulecord-modules/" \
+                             "main/locales/English.json"
+
+        self.locale_file = JsonFromUrl(locale_url)
+        self.default_locale_file = JsonFromUrl(default_locale_url)
+
+    def __getitem__(self, item):
+        if not self.locale_file.get(item):
+            return self.default_locale_file.get(item)
+        return self.locale_file.get(item)
