@@ -16,7 +16,9 @@ class ModuleCord(commands.Bot):
         self.locale = {}
         self.config = YamlFile("config/config.yml")
         super().__init__(
-            intents=discord.Intents.all(), case_insensitive=True, command_prefix=self.config["Prefix"]
+            intents=discord.Intents.all(),
+            case_insensitive=True,
+            command_prefix=self.config["Prefix"],
         )
 
         self.repository = (
