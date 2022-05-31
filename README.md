@@ -33,7 +33,7 @@ or use
 ```
 [prefix]module list
 ```
-command to list all modules available on our repository\
+command to list all modules available on our repository
 
 ***If you want to add your cogs to our repository, you have to open pull request for it.***
 

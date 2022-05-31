@@ -80,6 +80,7 @@ class ModuleCord(commands.Bot):
         reload_message = {}
         error_message = None
         loaded_cogs = client.extensions
+        self.config = YamlFile("config/config.yml")
         for cog in list(loaded_cogs):
             await client.unload_extension(cog)
         for file in Path('cogs').glob('**/*.py'):
