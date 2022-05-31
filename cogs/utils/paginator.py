@@ -15,7 +15,7 @@ class PaginatorMenu(ui.View, menus.MenuPages):
         await self._source._prepare_once()
         self.ctx = ctx
         if self._source.get_max_pages() != 1:
-            self.next_page.disabled = True if self.current_page + 1 == self._source.get_max_pages() else False
+            self.next_page.disabled = self.current_page + 1 == self._source.get_max_pages()
             self.page_number.label = f"{self.current_page + 1}/{self._source.get_max_pages()}"
         else:
             self.clear_items()
@@ -29,13 +29,13 @@ class PaginatorMenu(ui.View, menus.MenuPages):
 
     async def interaction_check(self, interaction):
         await interaction.response.defer()
-        self.next_page.disabled = True if self.current_page + 1 == self._source.get_max_pages() - 1 else False
+        self.next_page.disabled = self.current_page + 1 == self._source.get_max_pages() - 1
         return interaction.user == self.ctx.author
 
     @ui.button(label='←', style=discord.ButtonStyle.blurple, disabled=True, row=2)
     async def before_page(self, button, interaction):
         self.page_number.label = f"{self.current_page}/{self._source.get_max_pages()}"
-        self.before_page.disabled = True if "1/" in self.page_number.label else False
+        self.before_page.disabled = "1/" in self.page_number.label
         await self.show_checked_page(self.current_page - 1)
 
     @ui.button(label='1/', style=discord.ButtonStyle.green, disabled=True, row=2)
@@ -45,7 +45,7 @@ class PaginatorMenu(ui.View, menus.MenuPages):
     @ui.button(label='→', style=discord.ButtonStyle.blurple, disabled=True, row=2)
     async def next_page(self, button, interaction):
         self.page_number.label = f"{self.current_page + 2}/{self._source.get_max_pages()}"
-        self.before_page.disabled = True if "1/" in self.page_number.label else False
+        self.before_page.disabled = "1/" in self.page_number.label
         await self.show_checked_page(self.current_page + 1)
 
 
