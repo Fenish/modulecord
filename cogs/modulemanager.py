@@ -25,8 +25,8 @@ class ModuleManager(commands.Cog):
         return {}
 
     def get_modules(self) -> list:
-        module_repo = JsonFromUrl(self.bot.repository)
         module_list = []
+        module_repo = JsonFromUrl(self.bot.repository)
         for module in module_repo:
             module_list.append(module.get("name").replace(".py", "").capitalize())
         return module_list
@@ -36,9 +36,9 @@ class ModuleManager(commands.Cog):
     async def module(self, ctx: Context):
         await ctx.send("soon")
 
-    @module.command()
+    @module.command(name="search")
     @commands.is_owner()
-    async def search(self, ctx: Context, module_to_search):
+    async def search_module(self, ctx: Context, module_to_search):
         founded = []
         _m = self.get_modules()
         locale = self.bot.locale["ModuleManager"]
@@ -65,9 +65,9 @@ class ModuleManager(commands.Cog):
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
-    @module.command()
+    @module.command(name="list")
     @commands.is_owner()
-    async def list(self, ctx: Context):
+    async def list_modules(self, ctx: Context):
         modules_list = []
         _m = self.get_modules()
         locale = self.bot.locale["ModuleManager"]
@@ -90,9 +90,9 @@ class ModuleManager(commands.Cog):
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
-    @module.command()
+    @module.command(name="install")
     @commands.is_owner()
-    async def install(self, ctx: Context, module):
+    async def install_module(self, ctx: Context, module):
         module = module.lower()
         locale = self.bot.locale["ModuleManager"]
         checking_module = locale["checking"].replace("{module}", module)
@@ -120,7 +120,8 @@ class ModuleManager(commands.Cog):
                 repo_requirements = JsonFromUrl(self.bot.repodepencies)
                 if repo_requirements.get(module):
                     required = set(repo_requirements[module])
-                    installed = {pkg.key for pkg in pkg_resources.working_set}
+                    working_set = pkg_resources.working_set or {}
+                    installed = {pkg.key for pkg in working_set}
                     missing = required - installed
                     depencies = []
                     for k in missing:
