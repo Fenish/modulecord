@@ -134,7 +134,7 @@ class ModuleManager(commands.Cog):
                         embed.colour = 0x86ff71
                         python = sys.executable
                         p = Popen([python, '-m', 'pip', 'install', *missing], stdout=PIPE,
-                                  stderr=STDOUT, shell=True, encoding="utf-8")
+                                  stderr=STDOUT, shell=False, encoding="utf-8")
                         p.wait()
                 embed.description = locale["installed"]
 

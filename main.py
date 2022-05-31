@@ -96,13 +96,13 @@ class ModuleCord(commands.Bot):
                 error_message = f'Ignoring exception in cog {file.stem}:\n{e}'
                 traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
 
-        language = self.config['Locale'].lower()
+        language = self.config['Locale'].lower().capitalize()
         self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
                                   f"main/locales/{language}.json")
         if len(self.locale) == 0:
             self.config["Locale"] = "English"
             self.locale = JsonFromUrl("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
-                                      f"main/locales/english.json")
+                                      f"main/locales/English.json")
         return reload_message, error_message
 
     def installed_modules(self):
