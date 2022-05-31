@@ -1,6 +1,8 @@
+import io
 import os
 import sys
 import discord
+import tokenize
 import requests
 import pkg_resources
 
@@ -31,13 +33,31 @@ class ModuleManager(commands.Cog):
             module_list.append(module.get("name").replace(".py", "").capitalize())
         return module_list
 
-    @commands.group(invoke_without_command=True)
+    @staticmethod
+    def get_module_info(module):
+        req = requests.get("https://raw.githubusercontent.com/Fenish/modulecord-modules/"
+                           f"main/modules/{module.lower()}.py")
+        if req.status_code == 404:
+            return {}
+        code = io.BytesIO(req.content)
+
+        tokenized = list(tokenize.tokenize(code.readline))
+        comments = [token.string for token in tokenized if token.type == 61]
+
+        cog_information = {}
+        for comment in comments:
+            key, value = comment[2:].split(":")
+            cog_information.setdefault(key.lower().capitalize(), value.strip())
+
+        return cog_information
+
     @commands.is_owner()
+    @commands.group(invoke_without_command=True)
     async def module(self, ctx: Context):
         await ctx.send("soon")
 
-    @module.command(name="search")
     @commands.is_owner()
+    @module.command(name="search")
     async def search_module(self, ctx: Context, module_to_search):
         founded = []
         _m = self.get_modules()
@@ -65,8 +85,8 @@ class ModuleManager(commands.Cog):
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
-    @module.command(name="list")
     @commands.is_owner()
+    @module.command(name="list")
     async def list_modules(self, ctx: Context):
         modules_list = []
         _m = self.get_modules()
@@ -81,8 +101,8 @@ class ModuleManager(commands.Cog):
 
         base_text = (
             locale["list_description"]
-            .replace("{amount}", str(len(modules_list)))
-            .replace("{prefix}", ctx.prefix)
+                .replace("{amount}", str(len(modules_list)))
+                .replace("{prefix}", ctx.prefix)
         )
         source = PaginatorSource(
             embed=embed, entries=modules_list, per_page=10, base_text=base_text
@@ -90,8 +110,8 @@ class ModuleManager(commands.Cog):
         menu = PaginatorMenu(source)
         await menu.start(ctx)
 
-    @module.command(name="install")
     @commands.is_owner()
+    @module.command(name="install")
     async def install_module(self, ctx: Context, module):
         module = module.lower()
         locale = self.bot.locale["ModuleManager"]
@@ -152,6 +172,23 @@ class ModuleManager(commands.Cog):
         else:
             embed.description = locale["not_found"]
         return await status_msg.edit(embed=embed)
+
+    @commands.is_owner()
+    @module.command(name="info")
+    async def module_info(self, ctx: Context, module):
+        module = module.lower()
+        locale = self.bot.locale["ModuleManager"]
+        module_info = self.get_module_info(module)
+        embed = discord.Embed(title="🧩 " + locale["title"], colour=0x5BB8FD, description="")
+        embed.set_thumbnail(url="https://img.icons8.com/?id=46678&format=png&size=256")
+        if module_info:
+            for key in module_info:
+                embed.description += key + " : `" + module_info.get(key) + "`\n"
+        else:
+            embed.description = locale["not_found"]
+            embed.set_thumbnail(url="")
+            embed.colour = 0xFF5357
+        await ctx.send(embed=embed)
 
 
 async def setup(bot):
