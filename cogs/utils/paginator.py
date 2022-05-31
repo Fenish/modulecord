@@ -39,17 +39,17 @@ class PaginatorMenu(ui.View, menus.MenuPages):
         return interaction.user == self.ctx.author
 
     @ui.button(label="←", style=discord.ButtonStyle.blurple, disabled=True, row=2)
-    async def before_page(self, button, interaction):
+    async def before_page(self, _button, _interaction):
         self.page_number.label = f"{self.current_page}/{self._source.get_max_pages()}"
         self.before_page.disabled = "1/" in self.page_number.label
         await self.show_checked_page(self.current_page - 1)
 
     @ui.button(label="1/", style=discord.ButtonStyle.green, disabled=True, row=2)
-    async def page_number(self, button, interaction):
+    async def page_number(self, _button, _interaction):
         self.stop()
 
     @ui.button(label="→", style=discord.ButtonStyle.blurple, disabled=True, row=2)
-    async def next_page(self, button, interaction):
+    async def next_page(self, _button, _interaction):
         self.page_number.label = (
             f"{self.current_page + 2}/{self._source.get_max_pages()}"
         )
