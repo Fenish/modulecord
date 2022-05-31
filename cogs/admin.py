@@ -14,8 +14,9 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def reload(self, ctx: Context):
         begin = int(time.time_ns())
-        embed = discord.Embed(color=0xaae6e2,
-                              description=self.bot.locale["Admin"]["reloading"] + " 🔄")
+        embed = discord.Embed(
+            color=0xAAE6E2, description=self.bot.locale["Admin"]["reloading"] + " 🔄"
+        )
         message = await ctx.send(embed=embed)
         reload_message, error_message = await self.bot.reload_cogs()
         delta = int((int(time.time_ns()) - begin) / 1000000)
@@ -26,8 +27,11 @@ class Admin(commands.Cog):
         for key in reload_message:
             embed.add_field(name=key, value="\n".join(reload_message[key]), inline=True)
         if error_message:
-            embed.add_field(name=f"⚠️ {self.bot.locale['Admin']['reload_error']}",
-                            value=f"```py\n{error_message}\n```", inline=False)
+            embed.add_field(
+                name=f"⚠️ {self.bot.locale['Admin']['reload_error']}",
+                value=f"```py\n{error_message}\n```",
+                inline=False,
+            )
         await message.edit(embed=embed)
 
 
