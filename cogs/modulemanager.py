@@ -4,7 +4,6 @@ import discord
 import requests
 import pkg_resources
 
-from urllib import request
 from discord.ext import commands
 from discord.ext.commands import Context
 from subprocess import Popen, PIPE, STDOUT
@@ -112,7 +111,10 @@ class ModuleManager(commands.Cog):
                 embed.description = installing_module
                 embed.colour = 0x86ff71
                 await status_msg.edit(embed=embed)
-                request.urlretrieve(github_module["download_url"], f"cogs/modules/{module}.py")
+
+                download_url = github_module["download_url"]
+                r = requests.get(url=download_url)
+                open(f"cogs/modules/{github_module['name']}", "w+").write(r.text)
 
                 repo_requirements = JsonFromUrl(self.bot.repodepencies)
                 if repo_requirements.get(module):
