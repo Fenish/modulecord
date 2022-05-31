@@ -21,8 +21,10 @@ class ModuleCord(commands.Bot):
         self.repository = (
             "https://api.github.com/repos/Fenish/modulecord-modules/contents/modules"
         )
-        self.repodepencies = "https://raw.githubusercontent.com/Fenish/" \
-                             "modulecord-modules/main/requirements.json"
+        self.repodepencies = (
+            "https://raw.githubusercontent.com/Fenish/"
+            "modulecord-modules/main/requirements.json"
+        )
 
         try:
             act_type = self.config["Presence"]["Type"]
